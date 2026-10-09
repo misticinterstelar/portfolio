@@ -141,9 +141,10 @@ function e($s) {
 // ============================================================
 
 $note = "";
+$noteKey = "";
 $sent = false;
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+if (($_SERVER["REQUEST_METHOD"] ?? "GET") === "POST") {
     if (!empty($_POST["website"])) {
         exit;
     }
@@ -154,8 +155,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($from === "" || $message === "") {
         $note = "Please fill in your name and message.";
+        $noteKey = "form.errorRequired";
     } elseif (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
         $note = "That email doesn't look right.";
+        $noteKey = "form.errorEmail";
     } else {
         $sent = mail(
             $email,
@@ -167,6 +170,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $note = $sent
             ? "Sent! I'll reply soon ♥"
             : "Couldn't send it. Try emailing me directly.";
+        $noteKey = $sent ? "form.sent" : "form.errorSend";
     }
 }
 ?>
@@ -176,7 +180,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-    <title><?= e($name) ?> | Student, builder, player one</title>
+    <title data-i18n-title="page.title"><?= e($name) ?> | Student, builder, player one</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -194,7 +198,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <header>
     <span class="logo"><?= e($name) ?></span>
-    <button class="btn ghost" id="jump">Jump to <kbd>Ctrl K</kbd></button>
+    <div class="header-actions">
+        <label class="language-label" for="languageSwitcher" data-i18n="language.label">Language</label>
+        <select id="languageSwitcher" class="language-switcher" aria-label="Select language" data-i18n-aria-label="language.aria">
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="es">Español</option>
+        </select>
+        <button class="btn ghost" id="jump"><span data-i18n="nav.jump">Jump to</span> <kbd>Ctrl K</kbd></button>
+    </div>
 </header>
 
 <main>
@@ -209,33 +221,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <span class="spark" style="left:4%;top:86%;animation-delay:-2s" aria-hidden="true">✦</span>
 
         <div>
-            <span class="hi">Player 1: <?= e($name) ?> 🎮</span>
-            <h1>Level 3 engineer with a management side class.</h1>
+            <span class="hi"><span data-i18n="hero.playerPrefix">Player 1:</span> <?= e($name) ?> 🎮</span>
+            <h1 data-i18n="hero.title">Level 3 engineer with a management side class.</h1>
 
-            <p class="lead">
+            <p class="lead" data-i18n="hero.lead">
                 I study software engineering at EMSI and management at Abdelmalek Essaâdi University in Morocco.
                 I like building things that work in the real world, from Arduino robots to business websites.
             </p>
 
             <p class="stats">
-                <span>Software engineering</span>
-                <span>Management</span>
-                <span>Cybersecurity</span>
-                <span>Embedded systems</span>
+                <span data-i18n="hero.stat0">Software engineering</span>
+                <span data-i18n="hero.stat1">Management</span>
+                <span data-i18n="hero.stat2">Cybersecurity</span>
+                <span data-i18n="hero.stat3">Embedded systems</span>
             </p>
 
             <div class="row">
-                <a class="btn" href="#quests">Open the quest log</a>
-                <a class="btn ghost" href="cv.pdf">Download my CV</a>
+                <a class="btn" href="#quests" data-i18n="hero.openQuests">Open the quest log</a>
+                <a class="btn ghost" href="cv.pdf" data-i18n="hero.downloadCv">Download my CV</a>
             </div>
 
             <!-- PLAYER PROFILE -->
             <article class="profile" id="profile">
                 <div class="profile-top">
                     <div>
-                        <div class="profile-label">Player profile</div>
+                        <div class="profile-label" data-i18n="profile.label">Player profile</div>
                         <h3><?= e($name) ?></h3>
-                        <div class="profile-label">Player constellation</div>
+                        <div class="profile-label" data-i18n="profile.constellation">Player constellation</div>
                     </div>
 
                     <!-- Pixel constellation instead of a cat avatar -->
@@ -278,32 +290,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 <rect x="129" y="93" width="4" height="16" />
                             </g>
 
-                            <text x="15" y="116">BUILD</text>
-                            <text x="84" y="113">LEARN</text>
-                            <text x="143" y="92">GROW</text>
+                            <text x="15" y="116" data-i18n="profile.build">BUILD</text>
+                            <text x="84" y="113" data-i18n="profile.learn">LEARN</text>
+                            <text x="143" y="92" data-i18n="profile.grow">GROW</text>
                         </svg>
                     </div>
                 </div>
 
-                <p class="constellation-note">
+                <p class="constellation-note" data-i18n="profile.note">
                     A little map of the path: build things, keep learning, and grow toward the next world.
                 </p>
 
                 <div class="profile-grid">
                     <div class="profile-stat">
-                        <strong>Class</strong>
-                        <span>Software Engineer</span>
+                        <strong data-i18n="profile.class">Class</strong>
+                        <span data-i18n="profile.engineer">Software Engineer</span>
                     </div>
                     <div class="profile-stat">
-                        <strong>Secondary class</strong>
-                        <span>Management</span>
+                        <strong data-i18n="profile.secondaryClass">Secondary class</strong>
+                        <span data-i18n="hero.stat1">Management</span>
                     </div>
                     <div class="profile-stat">
-                        <strong>Specializations</strong>
-                        <span>Web · Embedded · Cybersecurity</span>
+                        <strong data-i18n="profile.specializations">Specializations</strong>
+                        <span data-i18n="profile.specializationList">Web · Embedded · Cybersecurity</span>
                     </div>
                     <div class="profile-stat">
-                        <strong>Next world</strong>
+                        <strong data-i18n="profile.nextWorld">Next world</strong>
                         <span>USA — 2027</span>
                     </div>
                 </div>
@@ -319,15 +331,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <div class="save-panel">
                     <span class="save-state">
                         <span class="save-dot"></span>
-                        <span id="saveStatus">Progress saved locally</span>
+                        <span id="saveStatus" data-i18n="save.saved">Progress saved locally</span>
                     </span>
-                    <button class="btn danger" type="button" id="resetSave">Reset save</button>
+                    <button class="btn danger" type="button" id="resetSave" data-i18n="profile.resetSave">Reset save</button>
                 </div>
             </article>
         </div>
 
         <!-- LAMP -->
-        <button class="lamp" id="lamp" aria-label="Toggle the lamp">
+        <button class="lamp" id="lamp" aria-label="Toggle the lamp" data-i18n-aria-label="lamp.toggle">
             <svg viewBox="0 0 390 340" aria-hidden="true">
                 <polygon class="cone" points="118,118 222,118 312,308 28,308" fill="var(--gold)"/>
                 <rect x="0" y="308" width="390" height="10" rx="5" fill="var(--line)"/>
@@ -356,7 +368,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <circle cx="352" cy="270" r="4.5" fill="var(--rose)" opacity=".7"/>
                 <path d="M331 269q4 4 8 0" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round"/>
             </svg>
-            <small>Tap the lamp</small>
+            <small data-i18n="lamp.tap">Tap the lamp</small>
         </button>
     </section>
 
@@ -368,38 +380,38 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <section class="sec" id="world">
         <div class="section-head">
             <div>
-                <div class="section-kicker">Overworld</div>
-                <h2>World map</h2>
+                <div class="section-kicker" data-i18n="map.kicker">Overworld</div>
+                <h2 data-i18n="map.title">World map</h2>
             </div>
-            <span class="map-hint">Tap a location to fast-travel</span>
+            <span class="map-hint" data-i18n="map.hint">Tap a location to fast-travel</span>
         </div>
-        <p>Explore locations to reveal more of the player behind the portfolio.</p>
+        <p data-i18n="map.desc">Explore locations to reveal more of the player behind the portfolio.</p>
 
         <div class="world-map">
             <div class="map-grid">
                 <button class="map-node" data-node="home" data-target="home" data-min-level="1">
-                    <span class="map-icon">🏠</span><b>Home Base</b><small class="map-level">Unlocked</small>
+                    <span class="map-icon">🏠</span><b data-i18n="map.home">Home Base</b><small class="map-level" data-i18n="common.unlocked">Unlocked</small>
                 </button>
                 <button class="map-node" data-node="saves" data-target="saves" data-min-level="1">
-                    <span class="map-icon">💾</span><b>Save Files</b><small class="map-level">Unlocked</small>
+                    <span class="map-icon">💾</span><b data-i18n="map.saves">Save Files</b><small class="map-level" data-i18n="common.unlocked">Unlocked</small>
                 </button>
                 <button class="map-node" data-node="quests" data-target="quests" data-min-level="2">
-                    <span class="map-icon">⚔️</span><b>Quest Log</b><small class="map-level">Lv 2</small>
+                    <span class="map-icon">⚔️</span><b data-i18n="map.quests">Quest Log</b><small class="map-level">Lv 2</small>
                 </button>
                 <button class="map-node" data-node="skills" data-target="skills" data-min-level="3">
-                    <span class="map-icon">🌳</span><b>Skill Tree</b><small class="map-level">Lv 3</small>
+                    <span class="map-icon">🌳</span><b data-i18n="map.skills">Skill Tree</b><small class="map-level">Lv 3</small>
                 </button>
                 <button class="map-node" data-node="jobs" data-target="jobs" data-min-level="4">
-                    <span class="map-icon">💼</span><b>Side Quests</b><small class="map-level">Lv 4</small>
+                    <span class="map-icon">💼</span><b data-i18n="map.jobs">Side Quests</b><small class="map-level">Lv 4</small>
                 </button>
                 <button class="map-node" data-node="trophies" data-target="trophies" data-min-level="5">
-                    <span class="map-icon">🏆</span><b>Trophy Case</b><small class="map-level">Lv 5</small>
+                    <span class="map-icon">🏆</span><b data-i18n="map.trophies">Trophy Case</b><small class="map-level">Lv 5</small>
                 </button>
                 <button class="map-node" data-node="contact" data-target="contact" data-min-level="6">
-                    <span class="map-icon">💌</span><b>Final Boss</b><small class="map-level">Lv 6</small>
+                    <span class="map-icon">💌</span><b data-i18n="map.contact">Final Boss</b><small class="map-level">Lv 6</small>
                 </button>
                 <button class="map-node" data-node="cyber" data-target="quests" data-min-level="7">
-                    <span class="map-icon">🔐</span><b>Cyber Lab</b><small class="map-level">Lv 7</small>
+                    <span class="map-icon">🔐</span><b data-i18n="map.cyber">Cyber Lab</b><small class="map-level">Lv 7</small>
                 </button>
             </div>
         </div>
@@ -411,17 +423,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <!-- ====================================================== -->
 
     <section class="sec" id="saves" data-xp="90">
-        <div class="section-kicker">Campaigns</div>
-        <h2>Save files</h2>
-        <p>Two campaigns running at once, and a third one loading.</p>
+        <div class="section-kicker" data-i18n="saves.kicker">Campaigns</div>
+        <h2 data-i18n="saves.title">Save files</h2>
+        <p data-i18n="saves.desc">Two campaigns running at once, and a third one loading.</p>
 
         <div class="saves">
-            <?php foreach ($saves as $g): ?>
+            <?php foreach ($saves as $i => $g): ?>
                 <article class="save <?= !empty($g["lock"]) ? "lock" : "" ?>" style="--c:<?= e($g["color"]) ?>">
-                    <span class="tag"><?= e($g["tag"]) ?></span>
-                    <h3><?= e($g["title"]) ?></h3>
-                    <b><?= e($g["sub"]) ?></b>
-                    <p><?= e($g["text"]) ?></p>
+                    <span class="tag" data-i18n="save.<?= $i ?>.tag"><?= e($g["tag"]) ?></span>
+                    <h3 data-i18n="save.<?= $i ?>.title"><?= e($g["title"]) ?></h3>
+                    <b data-i18n="save.<?= $i ?>.sub"><?= e($g["sub"]) ?></b>
+                    <p data-i18n="save.<?= $i ?>.text"><?= e($g["text"]) ?></p>
                 </article>
             <?php endforeach; ?>
         </div>
@@ -429,8 +441,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <div class="return-map-wrap">
             <button class="return-map" type="button" data-return-map>
                 <span class="return-map-arrow">↟</span>
-                <span>Return to World Map</span>
-                <small>Choose your next area</small>
+                <span data-i18n="return.map">Return to World Map</span>
+                <small data-i18n="return.area">Choose your next area</small>
             </button>
         </div>
     </section>
@@ -441,9 +453,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <!-- ====================================================== -->
 
     <section class="sec" id="quests" data-xp="100">
-        <div class="section-kicker">Missions</div>
-        <h2>Quest log</h2>
-        <p>Open projects for details. The cyber quest unlocks at Level 7.</p>
+        <div class="section-kicker" data-i18n="quests.kicker">Missions</div>
+        <h2 data-i18n="quests.title">Quest log</h2>
+        <p data-i18n="quests.desc">Open projects for details. The cyber quest unlocks at Level 7.</p>
 
         <div id="shelf">
             <?php foreach ($projects as $i => $g): ?>
@@ -454,9 +466,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     aria-disabled="<?= !empty($g["lock"]) ? "true" : "false" ?>"
                     style="--c:<?= e($g["color"]) ?>"
                 >
-                    <b><?= e($g["title"]) ?></b>
-                    <small><?= e($g["kind"]) ?></small>
-                    <em class="<?= !empty($g["lock"]) ? "lock-badge" : "" ?>">
+                    <b data-i18n="project.<?= $i ?>.title"><?= e($g["title"]) ?></b>
+                    <small data-i18n="project.<?= $i ?>.kind"><?= e($g["kind"]) ?></small>
+                    <em class="<?= !empty($g["lock"]) ? "lock-badge" : "" ?>" data-i18n="project.<?= $i ?>.tag">
                         <?= !empty($g["lock"]) ? "Lv " . (int)($g["minLevel"] ?? 1) : e($g["tag"]) ?>
                     </em>
                 </button>
@@ -466,8 +478,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <div class="return-map-wrap">
             <button class="return-map" type="button" data-return-map>
                 <span class="return-map-arrow">↟</span>
-                <span>Return to World Map</span>
-                <small>Choose your next quest</small>
+                <span data-i18n="return.map">Return to World Map</span>
+                <small data-i18n="return.quest">Choose your next quest</small>
             </button>
         </div>
     </section>
@@ -478,20 +490,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <!-- ====================================================== -->
 
     <section class="sec" id="skills" data-xp="90">
-        <div class="section-kicker">Abilities</div>
-        <h2>Skill tree</h2>
-        <p>Gold stars mark skills I've used in a real project or job.</p>
+        <div class="section-kicker" data-i18n="skills.kicker">Abilities</div>
+        <h2 data-i18n="skills.title">Skill tree</h2>
+        <p data-i18n="skills.desc">Gold stars mark skills I've used in a real project or job.</p>
 
         <div class="saves">
-            <?php foreach ($skills as $g): ?>
+            <?php foreach ($skills as $si => $g): ?>
                 <div class="grp">
-                    <h3><?= e($g["group"]) ?></h3>
+                    <h3 data-i18n="skill.group.<?= $si ?>"><?= e($g["group"]) ?></h3>
                     <ul class="chips">
-                        <?php foreach ($g["built"] as $x): ?>
-                            <li class="built">★ <?= e($x) ?></li>
+                        <?php foreach ($g["built"] as $bi => $x): ?>
+                            <li class="built" data-i18n="skill.<?= $si ?>.built.<?= $bi ?>">★ <?= e($x) ?></li>
                         <?php endforeach; ?>
-                        <?php foreach ($g["items"] as $x): ?>
-                            <li><?= e($x) ?></li>
+                        <?php foreach ($g["items"] as $ii => $x): ?>
+                            <li data-i18n="skill.<?= $si ?>.item.<?= $ii ?>"><?= e($x) ?></li>
                         <?php endforeach; ?>
                     </ul>
                 </div>
@@ -501,8 +513,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <div class="return-map-wrap">
             <button class="return-map" type="button" data-return-map>
                 <span class="return-map-arrow">↟</span>
-                <span>Return to World Map</span>
-                <small>Choose your next area</small>
+                <span data-i18n="return.map">Return to World Map</span>
+                <small data-i18n="return.skill">Choose your next skill</small>
             </button>
         </div>
     </section>
@@ -513,17 +525,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <!-- ====================================================== -->
 
     <section class="sec" id="jobs" data-xp="90">
-        <div class="section-kicker">Experience</div>
-        <h2>Side quests</h2>
-        <p>Work experience, plus the internship that's about to start.</p>
+        <div class="section-kicker" data-i18n="jobs.kicker">Experience</div>
+        <h2 data-i18n="jobs.title">Side quests</h2>
+        <p data-i18n="jobs.desc">Work experience, plus the internship that's about to start.</p>
 
         <div class="saves">
-            <?php foreach ($jobs as $g): ?>
+            <?php foreach ($jobs as $ji => $g): ?>
                 <article class="save <?= !empty($g["lock"]) ? "lock" : "" ?>" style="--c:<?= e($g["color"]) ?>">
-                    <span class="tag"><?= e($g["tag"]) ?></span>
-                    <h3><?= e($g["title"]) ?></h3>
-                    <b><?= e($g["sub"]) ?></b>
-                    <p><?= e($g["text"]) ?></p>
+                    <span class="tag" data-i18n="job.<?= $ji ?>.tag"><?= e($g["tag"]) ?></span>
+                    <h3 data-i18n="job.<?= $ji ?>.title"><?= e($g["title"]) ?></h3>
+                    <b data-i18n="job.<?= $ji ?>.sub"><?= e($g["sub"]) ?></b>
+                    <p data-i18n="job.<?= $ji ?>.text"><?= e($g["text"]) ?></p>
                 </article>
             <?php endforeach; ?>
         </div>
@@ -531,8 +543,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <div class="return-map-wrap">
             <button class="return-map" type="button" data-return-map>
                 <span class="return-map-arrow">↟</span>
-                <span>Return to World Map</span>
-                <small>Choose your next side quest</small>
+                <span data-i18n="return.map">Return to World Map</span>
+                <small data-i18n="return.job">Choose your next side quest</small>
             </button>
         </div>
     </section>
@@ -543,16 +555,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <!-- ====================================================== -->
 
     <section class="sec" id="trophies" data-xp="110">
-        <div class="section-kicker">Achievements</div>
-        <h2>Trophy case</h2>
-        <p>Real achievements unlock as you reach them. Future achievements stay locked.</p>
+        <div class="section-kicker" data-i18n="trophies.kicker">Achievements</div>
+        <h2 data-i18n="trophies.title">Trophy case</h2>
+        <p data-i18n="trophies.desc">Real achievements unlock as you reach them. Future achievements stay locked.</p>
 
         <ul class="cab" id="cab">
             <?php foreach ($trophies as $i => $t): ?>
                 <li class="tro <?= !empty($t["lock"]) ? "lock" : "" ?>" data-trophy="trophy-<?= $i ?>">
                     <span class="ic"><?= $t["icon"] ?></span>
-                    <h3><?= e($t["title"]) ?></h3>
-                    <p><?= e($t["text"]) ?></p>
+                    <h3 data-i18n="trophy.<?= $i ?>.title"><?= e($t["title"]) ?></h3>
+                    <p data-i18n="trophy.<?= $i ?>.text"><?= e($t["text"]) ?></p>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -560,8 +572,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <div class="return-map-wrap">
             <button class="return-map" type="button" data-return-map>
                 <span class="return-map-arrow">↟</span>
-                <span>Return to World Map</span>
-                <small>Choose your next area</small>
+                <span data-i18n="return.map">Return to World Map</span>
+                <small data-i18n="return.trophy">Choose your next achievement</small>
             </button>
         </div>
     </section>
@@ -572,29 +584,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <!-- ====================================================== -->
 
     <section class="sec" id="contact" data-xp="100">
-        <div class="section-kicker">End of demo</div>
-        <h2>Join my lobby</h2>
-        <p>Open to internships, collabs and good conversations about tech. Send me a message.</p>
+        <div class="section-kicker" data-i18n="contact.kicker">End of demo</div>
+        <h2 data-i18n="contact.title">Join my lobby</h2>
+        <p data-i18n="contact.desc">Open to internships, collabs and good conversations about tech. Send me a message.</p>
 
         <?php if ($note): ?>
-            <div class="note <?= $sent ? "ok" : "err" ?>" role="status">
+            <div class="note <?= $sent ? "ok" : "err" ?>" role="status" data-i18n="<?= e($noteKey) ?>">
                 <?= e($note) ?>
             </div>
         <?php endif; ?>
 
         <form method="post" action="#contact">
-            <input name="name" placeholder="Your name" aria-label="Your name" required value="<?= $sent ? "" : e($_POST["name"] ?? "") ?>">
-            <input name="email" type="email" placeholder="Your email" aria-label="Your email" required value="<?= $sent ? "" : e($_POST["email"] ?? "") ?>">
-            <textarea name="message" rows="4" placeholder="Your message" aria-label="Message" required><?= $sent ? "" : e($_POST["message"] ?? "") ?></textarea>
+            <input name="name" placeholder="Your name" aria-label="Your name" data-i18n-placeholder="form.name" data-i18n-aria-label="form.name" required value="<?= $sent ? "" : e($_POST["name"] ?? "") ?>">
+            <input name="email" type="email" placeholder="Your email" aria-label="Your email" data-i18n-placeholder="form.email" data-i18n-aria-label="form.email" required value="<?= $sent ? "" : e($_POST["email"] ?? "") ?>">
+            <textarea name="message" rows="4" placeholder="Your message" aria-label="Message" data-i18n-placeholder="form.message" data-i18n-aria-label="form.messageLabel" required><?= $sent ? "" : e($_POST["message"] ?? "") ?></textarea>
             <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-            <button class="btn" type="submit">Press start</button>
+            <button class="btn" type="submit" data-i18n="form.submit">Press start</button>
         </form>
 
         <div class="return-map-wrap">
             <button class="return-map" type="button" data-return-map>
                 <span class="return-map-arrow">↟</span>
-                <span>Return to World Map</span>
-                <small>Choose where to explore next</small>
+                <span data-i18n="return.map">Return to World Map</span>
+                <small data-i18n="return.contact">Choose where to explore next</small>
             </button>
         </div>
     </section>
@@ -602,9 +614,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </main>
 
 <footer>
-    Made with HTML, CSS, JavaScript, PHP and one cup of tea.
+    <span data-i18n="footer.made">Made with HTML, CSS, JavaScript, PHP and one cup of tea.</span>
     <br>
-    <small>Your RPG progress is stored only in this browser.</small>
+    <small data-i18n="footer.save">Your RPG progress is stored only in this browser.</small>
 </footer>
 
 
@@ -619,7 +631,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <p><span class="tag" id="dg"></span></p>
     <p id="dq"></p>
     <ul id="dl"></ul>
-    <button class="btn" id="dc">Back to the quest log</button>
+    <button class="btn" id="dc" data-i18n="dialog.back">Back to the quest log</button>
 </dialog>
 
 
@@ -628,7 +640,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <!-- ========================================================== -->
 
 <dialog id="pal">
-    <input id="q" placeholder="Jump to..." aria-label="Search commands" autocomplete="off">
+    <input id="q" placeholder="Jump to..." aria-label="Search commands" data-i18n-placeholder="commands.placeholder" data-i18n-aria-label="commands.search" autocomplete="off">
     <ul id="cmds"></ul>
 </dialog>
 
@@ -637,14 +649,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <!-- ORIGINAL SIMPLE PIXEL CAT -->
 
-<button class="pcat" id="pcat" aria-label="Pixel cat. Press to make it hop.">
+<button class="pcat" id="pcat" aria-label="Pixel cat. Press to make it hop." data-i18n-aria-label="cat.label">
     <span class="say" id="say" aria-hidden="true"></span>
     <span id="sprite"></span>
 </button>
 
 
 <script>
-    const PROJECTS = <?= json_encode($projects, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
+    window.PROJECTS = <?= json_encode($projects, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
 </script>
 <script src="script.js"></script>
 
