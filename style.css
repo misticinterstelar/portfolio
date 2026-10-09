@@ -1160,3 +1160,78 @@ footer {
         scroll-behavior: auto !important;
     }
 }
+
+/* ==========================================================
+   LANGUAGE SWITCHER — paste this at the END of style.css
+   ========================================================== */
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+}
+
+.language-label {
+    color: var(--ink, #252333);
+    font-size: 0.82rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.language-switcher {
+    appearance: none;
+    -webkit-appearance: none;
+    max-width: 145px;
+    padding: 0.65rem 2rem 0.65rem 0.85rem;
+    border: 2px solid var(--line, #252333);
+    border-radius: 999px;
+    background-color: var(--paper, #020202);
+    color: var(--ink, #f9f8fc);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 800;
+    line-height: 1.2;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink, #252333);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='m2 4 4 4 4-4' fill='none' stroke='%23252333' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.65rem center;
+    transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.language-switcher:hover {
+    transform: translateY(-1px);
+    box-shadow: 4px 4px 0 var(--ink, #252333);
+}
+
+.language-switcher:focus-visible {
+    outline: 3px solid var(--gold, #ffd986);
+    outline-offset: 3px;
+}
+
+.header-actions #jump {
+    white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+    header {
+        flex-wrap: wrap;
+        row-gap: 0.75rem;
+    }
+
+    .header-actions {
+        gap: 0.45rem;
+    }
+
+    .language-label {
+        display: none;
+    }
+
+    .language-switcher {
+        max-width: 112px;
+        padding: 0.6rem 1.65rem 0.6rem 0.65rem;
+        font-size: 0.82rem;
+    }
+}
